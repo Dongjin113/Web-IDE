@@ -84,9 +84,14 @@ PostMan을 통해서는 정상 작동하던 SSE가 프론트와 연결해서 요
 #### - 해결방법
 SSE는 HTTP GET 메서드를 통해서만 클라이언트와의 서버 간의 통신을 지원하기 때문에 Post를 통해 받는 요청을 Get 요청으로 변경 
 
-
 ### 2. 로그인 UI
 https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/0f7d74d4-c6d6-42db-b779-b37957fc71cf
+
+#### 시퀀스 다이아그램
+![image](https://github.com/Dongjin113/Web-IDE/assets/104759062/0c2f0b15-2915-4b67-95b9-71603884ef1e)
+
+
+
 
 
 
