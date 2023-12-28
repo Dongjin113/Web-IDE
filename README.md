@@ -90,6 +90,20 @@ https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/0f7d74d4-c6d6-42db-b779-b3
 #### 시퀀스 다이아그램
 ![image](https://github.com/Dongjin113/Web-IDE/assets/104759062/0c2f0b15-2915-4b67-95b9-71603884ef1e)
 
+1. 로그인 페이지 아이디 비밀번호 입력 후 로그인 요청
+2. 아이디 비밀번호 확인 후 AccessToken(Header)과 RefreshToken(Cookie)을 발급
+3. 클라이언트에서 AccessToken을 Local Storage에 저장
+4. 로그인이 필요한 요청을 보낼 시 AccessToken을 검증
+5. AccessToken이 만료되었을시 클라이언트에서 RefreshToken을 통한 AccessToken 재발급 요청
+6. RefreshToken을 검증 후  AccessToken을 재발급
+7. AccessToken의 유효기간은 5분 RefreshToken의 유효기간은 2주
+
+#### AccessToken의 검증 순서
+1. Filter에서 검증이 필요한 요청인지 확인 검증이 필요하지 않은 요청이라면 filter가 실행되지 않는다
+2. 검증이 필요하다면 검증을 위한 AbstractAuthenticationToken을 상속받은 객체에 AccesToken을 담은 후
+3. AuthenticationManager를 통해 어떠한 Provider를 통해 검증을 진행할 것인지 찾은 후
+4. AuthenticationProvider를 상속받아 구현한 Provider에서 토큰의 유효성을 검토한 후
+5. 검증이 완료되었다면 정상실행이되고 인증에 실패했다면 인증에 실패했다는 예외를 발생시켜준다
 
 
 
