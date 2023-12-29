@@ -209,10 +209,10 @@ Filter에 어떤 Provider쓸지 지정해준 Manager를 직접 주입해준다�
 
 
 ### 고민사항
-filter에서 사용하는 login과 controller에서 하는 login
+#### 1. filter에서 사용하는 login과 controller에서 하는 login
 - 구현을 하다보면 filter에서 처리하는 login과 Controller에서 처리하는 login의 유의미한 차이에 대해 고민
 
-refreshtoken을통해 재발급하는과정 accessToken확인후 확인실패시 refreshToken 확인 후 실패시 재로그인
+#### 2. refreshtoken을통해 재발급하는과정 accessToken확인후 확인실패시 refreshToken 확인 후 실패시 재로그인
 - 프로젝트내에서 accessToken이 만료되면 프론트에서 요청을 보내서 refreshToken을 통해 accessToken을 다시 재발급하는데
   이때 요청을 보내지않고 accessToken이 만료된 요청이 들어온다면 refreshToken을 확인하고 자동적으로 accessToken을 발급한 후 들어온 요청을 처리하고
   새로 발급된 accessToken도 같이 발급해준다면 불필요한 요청을 줄일 수 있지 않을까?
