@@ -63,7 +63,7 @@ https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/1034d809-5a2d-4bb0-a8a0-e1
 SSE와 마지막까지 고민했지만 기간내에 구현하기에 SSE보다 구현과 설정이 복잡하고,  
 양방향통신까지 필요한 것이 아닌 서버에서 클라이언트로 보내는 단방향 통신만 필요로 하기에 과하다고 생각했다  
 
-##### 2. Pulling
+##### 2. Polling
 주기적으로 클라이언트에서 요청을 보내서 매번 확인하는 방법으로 불필요한 요청들이 많이 올 것이라고 생각해서 탈락  
 
 ##### 3. Long Polling
@@ -102,7 +102,7 @@ AccessToken의 유효기간은 1분 RefreshToken의 유효기간은 2주
 AccessToken은 Local Storage에 저장하여 사용하기 때문에 보안을 강화하기 위해 유효기간을 짧게 설정했습니다.    
 긴 기간을 사용하기 때문에 비교적 안전한 Cookie에 저장했고, httpOnly 속성을 사용하여 JavaScript로의 직접적인 접근을 방지했습니다.
 
-###검증
+### 검증
 #### AccessToken의 검증순서
 1. Filter에서 검증이 필요한 요청인지 확인 검증이 필요하지 않은 요청이라면 filter가 실행되지 않는다
 2. 검증이 필요하다면 검증을 위한 AbstractAuthenticationToken을 상속받은 객체에 AccesToken을 담은 후
@@ -115,5 +115,104 @@ AccessToken은 Local Storage에 저장하여 사용하기 때문에 보안을 �
 2. 요청이 들어오면 RefreshTokenAuthenticationFilter -> AuthenticationManager -> RefreshAuthenticationProvider -> RefreshTokenAuthenticationFilter 순으로 검증 후
 3. RefreshToken이 유효하다면 AccessToken을 재발급해 클라이언트에 보내준다
 
+#### 이메일 인증 검증 순서
+1. 클라이언트에서 이메일 인증 요청을 보낼때 UUID값을 생성해서 같이 보낸다.
+2. 서버에 요청이 들어오면 UUID값을 통해 SSE를 연결하고 요청이 들어온 이메일로 인증 URL과 인증을위한 토큰을 발급해준다.
+3. 사용자가 이메일에서 이메일인증 요청을 보내면 인증이 완료 되었다는 템플릿과 기존의 회원가입을 진행하라고 응답해준다.
+4. 서버에서 이메일인증이 완료되면 원래 사용자가 이메일 인증을 진행하던 페이지에 인증이 완료되었다는 응답을 보내준다.
 
 
+### 트러블 슈팅
+#### 1. 빈의 복잡한 순환참조 발생
+@Bean으로 등록할 설정파일이 많아질것을 고려하여 @Configuration을 여러 class로 분리할려고 했으나  
+분리한 설정파일 내에서 순환참조가 발생  
+
+##### 해결방안
+설정파일을 분리할만큼의 내용이 많지 않아 SecurityConfig 한 파일에서 관리하기로 결정 
+
+#### 2. 이메일인증을 진행하던중 stackoveflow 발생
+filter에서 manager로 들어가 인증을 하던중 provider까지 도착하지못하고 도중에 overflow가 발생
+
+=> 예상오류 USerDetails를 두곳에서 custom해서 사용했기때문에 authenticationmanager에서 어떤 UserDetails를 어디서 정의한 놈을 쓸줄 모르겠어!! 하면서 죽기직전까지 서로를 호출하면서 무한반복하기때문에 stackOverFlow가 발생한다
+
+authenticationmanager에게 어떤 UserDetails를 사용할지 bean으로 등록해준다
+
+    @Bean
+    public AuthenticationManager emailAuthenticationManager() throws Exception {
+        return new ProviderManager(Collections.singletonList(emailAuthenticationProvider()));
+    }
+
+    @Bean
+    public AuthenticationManager jwtAuthenticationManager() throws Exception {
+        return new ProviderManager(Collections.singletonList(jwtAuthenticationProvider()));
+    }
+    
+이렇게 두개만 등록해줬더니 primary로 누굴쓸지 모르겠어!!! 라고 에러를 방출해서 
+
+    @Bean
+    @Primary
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+    
+커스텀한 manager를 primary로 사용해주기에는 매번 다른 provider를 호출해줘야하기 때문에 기본 AuthenticationManager를 생성해서 @Primary로 등록해줬다.
+
+그리고 filter안의 authenticationManager를 어떤 bean의 manager를 사용할것인지 @Qualifier로 어떤 manager를 쓸것인지 명시해준다
+
+    private final AuthenticationManager authenticationManager;
+    private final EmailAuthService emailAuthService;
+
+    public EmailAuthenticationFilter(
+            @Qualifier("emailAuthenticationManager") AuthenticationManager authenticationManager,
+            EmailAuthService emailAuthService
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.emailAuthService = emailAuthService;
+    }
+
+@RequiredArgsConstructor를 사용한다면 @Qualifier 를 사용할수없기때문에 constructor에 직접 주입해준다.
+
+
+##### 최종 변경안
+Filter에 어떤 Provider쓸지 지정해준 Manager를 직접 주입해준다면 어떤 Provider를 쓸 Manager인지 Bean으로 등록할 필요가 없어
+@Primary와 불필요한 @Bean 등록을 줄일 수 있었다.
+
+    @Bean
+    public EmailAuthenticationFilter emailAuthenticationFilter() throws Exception {
+        return new EmailAuthenticationFilter(
+                new ProviderManager(Collections
+                        .singletonList(emailAuthenticationProvider()))
+                , emailAuthService
+                , authenticationEntryPoint
+        );
+    }
+
+    @Bean
+    public AccessAuthenticationFilter accessAuthenticationFilter() throws Exception {
+        return new AccessAuthenticationFilter(
+                new ProviderManager(Collections.singletonList(accessAuthenticationProvider()))
+                , authenticationEntryPoint
+                , userService
+                , permitUrlList);
+    }
+
+    @Bean
+    public RefreshTokenAuthenticationFilter refreshTokenAuthenticationFilter() throws Exception {
+        return new RefreshTokenAuthenticationFilter(
+                new ProviderManager(Collections.singletonList(refreshAuthenticationProvider()))
+                , userService
+                , authenticationEntryPoint
+                , jwtUtils);
+    }
+
+
+### 고민사항
+filter에서 사용하는 login과 controller에서 하는 login
+- 구현을 하다보면 filter에서 처리하는 login과 Controller에서 처리하는 login의 유의미한 차이에 대해 고민
+
+refreshtoken을통해 재발급하는과정 accessToken확인후 확인실패시 refreshToken 확인 후 실패시 재로그인
+- 프로젝트내에서 accessToken이 만료되면 프론트에서 요청을 보내서 refreshToken을 통해 accessToken을 다시 재발급하는데
+  이때 요청을 보내지않고 accessToken이 만료된 요청이 들어온다면 refreshToken을 확인하고 자동적으로 accessToken을 발급한 후 들어온 요청을 처리하고
+  새로 발급된 accessToken도 같이 발급해준다면 불필요한 요청을 줄일 수 있지 않을까?
