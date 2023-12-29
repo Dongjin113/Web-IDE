@@ -41,6 +41,10 @@
 ## 아키텍쳐
 ![image](https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/2e916f9f-e9c0-429c-b6d8-99f2bd9ed37a)
 
+## 👀 ERD
+![image](https://github.com/Dongjin113/Web-IDE/assets/104759062/b74b7132-cc93-4d37-a72d-69d09f54292c)
+
+
 ## 🔎 UI 및 기능
 ### 1. 회원가입 UI
 https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/1034d809-5a2d-4bb0-a8a0-e126aa4dd71f
@@ -215,3 +219,6 @@ filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 �
 - 프로젝트내에서 accessToken이 만료되면 프론트에서 요청을 보내서 refreshToken을 통해 accessToken을 다시 재발급하는데
   이때 요청을 보내지않고 accessToken이 만료된 요청이 들어온다면 refreshToken을 확인하고 자동적으로 accessToken을 발급한 후 들어온 요청을 처리하고
   새로 발급된 accessToken도 같이 발급해준다면 불필요한 요청을 줄일 수 있지 않을까?
+
+#### 3. refreshToken을 저장하는 DB 테이블을 설계했으나 현재의 프로젝트에서는 refreshToken을 저장할 필요가 없는 것 같다
+- DB 테이블 삭제
