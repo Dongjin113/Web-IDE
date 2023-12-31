@@ -75,9 +75,85 @@ Exception과 Response 응답모두 같은 ApiResponse 추상 클래스를 반환
         2. Error 발생 시 에러에 대한 추가정보가 필요할 시 담아서 반환  
 
   ### Exception 전략
+
+  #### 1. 타입을 유연하게 쓰기위한 부모 인터페이스의 ErrorType 
+  ```
+    public interface ErrorType {
+        HttpStatus getStatusCode();    
+        String getCode();
+        String getMessage();
+    }
+  ```
+  #### 2. CustomException의 부모 추상 클래스
+  총 세개의 타입을 정의해 두었다
+  1. 정의해둔 ErrorCode Type만 받는 생성자  
+  2. ErrorCode Type과 변경할 Message를 받는 생성자  
+  3. ErrorCode Type과 에러에대한 추가정보를 받을 ErrorData
+  ```
+  @Getter
+  public abstract class CustomException extends RuntimeException {
   
+      private final ErrorType errorCode;
+      private ErrorData errorData;
+  
+      public CustomException(ErrorCode errorCode) {
+          super(errorCode.getMessage());
+          this.errorCode = errorCode;
+      }
+  
+      public CustomException(ErrorCode errorCode, String message) {
+          super(errorCode.changeMessage(message).getMessage());
+          this.errorCode = errorCode.changeMessage(message);
+      }
+  
+      public CustomException(ErrorCode errorCode, ErrorData errorData) {
+          super(errorCode.getMessage());
+          this.errorCode = errorCode;
+          this.errorData = errorData;
+      }
+  }
+  ```
+  ##### 상속받아 custom한 Exception 예시
+  ```
+  public class EmailAuthFailure extends CustomException {
+    public EmailAuthFailure() {
+        super(ErrorCode.EMAIL_AUTH_FAIL);
+    }
+    public EmailAuthFailure(String message) {
+        super(ErrorCode.EMAIL_AUTH_FAIL, message);
+    }
+    public EmailAuthFailure(ErrorData errorData) {
+        super(ErrorCode.EMAIL_AUTH_FAIL, errorData);
+    }
+  }
+  ```
 
+  #### 3. ErrorCode 에러에 대해 정의해두는 EnumClass 
+  ```
+  @Getter
+  public enum ErrorCode implements ErrorType {
+  
+      SUCCESS(HttpStatus.OK, "200", "OK"),
+      LOGIN_FAIL(HttpStatus.UNAUTHORIZED, "401", "아이디와 비밀번호를 확인 해주세요"),
+  
+      @JsonIgnore
+      private final HttpStatus statusCode;
+      private final String code;
+      private String message;
+  
+      ErrorCode(HttpStatus statusCode, String code, String message) {
+          this.statusCode = statusCode;
+          this.code = code;
+          this.message = message;
+      }
+  
+      public ErrorResult changeMessage( String message ) {
+          return new ErrorResult(this.statusCode, this.getCode(), message);
+      }
+  }
+  ```
 
+  
    ### 응답 예시
    #### 정상 응답
    ```
@@ -285,3 +361,6 @@ filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 �
 
 #### 3. refreshToken을 저장하는 DB 테이블을 설계했으나 현재의 프로젝트에서는 refreshToken을 저장할 필요가 없는 것 같다
 - DB 테이블 삭제
+
+#### 4. Enum에 정의해둔 에러의 Message만 변경할려고 했으나 영구적으로 값이 변경되었다
+- ErrorResult라는 class를 정의하고 메시지를 변경하면 새로운 객체를 만들어서 반환하도록 변경
