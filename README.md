@@ -44,6 +44,69 @@
 ## 👀 ERD
 ![image](https://github.com/Dongjin113/Web-IDE/assets/104759062/b74b7132-cc93-4d37-a72d-69d09f54292c)
 
+## ❌ Exception Response 전략
+### ApiResponse
+Exception과 Response 응답모두 같은 ApiResponse 추상 클래스를 반환
+   - Status와 T 타입의 필드를 선언
+     ```
+      @Getter
+      public class ApiResponse<T> {
+      
+          private Status status;
+      
+          private T data;
+      
+          public ApiResponse(ErrorType errorCode) {
+              this.status = new Status(errorCode);
+          }
+      
+          public ApiResponse(ErrorType errorCode, T data) {
+              this.status = new Status(errorCode);
+              this.data = data;
+          }
+      }
+     ```
+      - Status
+        1. 정상 응답시 200의 상태코드와 Success라는 성공메시지를 반환
+        2. Error 발생 시 프론트와 약속한 Error 코드와 에러 메시지 내용을 반환
+           
+      - T 타입
+        1. 타입을 유연하게 받아오기위해 Generic T 타입으로 선언 ( 정상 응답시 요청한 데이터를 담아서 반환 )
+        2. Error 발생 시 에러에 대한 추가정보가 필요할 시 담아서 반환  
+
+  ### Exception 전략
+  
+
+
+   ### 응답 예시
+   #### 정상 응답
+   ```
+   @PostMapping("")
+    public ApiResponse<ContainerResponse> create(
+            @Valid @RequestBody ContainerCreateRequest request,
+            @AuthenticationPrincipal JwtUserDetails user
+    ) {
+        return new ApiResponse<>(
+                ErrorCode.SUCCESS,
+                containerService.createContainer(user.getEmail(), request)
+        );
+    }
+   ```
+
+   #### ErrorHandler
+   ```
+    @ExceptionHandler(CustomException.class)
+    @ResponseBody
+    public ApiResponse<?> customExceptionHandler(
+            HttpServletResponse response, CustomException e
+    ) {
+        response.setStatus(e.getErrorCode().getStatusCode().value());
+        return new ErrorResponse(e.getErrorCode(), e.getErrorData());
+    }
+   ```
+
+
+
 
 ## 🔎 UI 및 기능
 ### 1. 회원가입 UI
