@@ -348,7 +348,7 @@ SSE는 HTTP GET 메서드를 통해서만 클라이언트와의 서버 간의 �
 #### 4. Custom해서 사용하던 Exception을 그대로 사용했으나 Filter에서는 Custom한 Exception 로직을 타지 않음
 
 ##### 해결방안
-filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 커스텀하고 AythenticationException을 커스텀해서 어떠한 에러가 발생했는지 직접 커스텀해서 사용했다. 
+filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 커스텀하고 AuthenticationException을 커스텀해서 어떠한 에러가 발생했는지 직접 커스텀해서 사용했다. 
 
 ## ❓❔ 고민사항
 #### 1. filter에서 사용하는 login과 controller에서 하는 login
