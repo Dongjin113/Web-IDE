@@ -366,4 +366,46 @@ filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 �
 - ErrorResult라는 class를 정의하고 메시지를 변경하면 새로운 객체를 만들어서 반환하도록 변경
 
 
-## 원본 레포 기능 영상 => https://github.com/Goorm-OGJG/Web-IDE
+## 👀 전체 기능 시연영상
+
+### 3. 메인 UI
+#### 3-1. 컨테이너 사이드바 UI
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/3fb37e9e-efb3-4edf-832d-36f9576f0caf
+#### 3-2. 컨테이너 검색 기능
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/9b1e9900-3d00-4d2f-b5e0-c2d11a5b4a39
+#### 3-3. 컨테이너 삭제
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/0a08d837-ecfc-4f41-a54d-c12faaa2a4cc
+#### 3-4. 컨테이너 참여 유저 정보 UI
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/5f36e3b8-24a6-41cb-84f0-eae3981ec45d
+#### 3-5. 컨테이너 시작
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/7fc30149-6ade-4661-8173-bfbf8b9fc738
+#### 3-6. 컨테이너 고정, 링크 복사, 공개 비공개 전환
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/86ee0819-dea0-4315-8e04-840e287d3167
+#### 3-7. 컨테이너 소개 정보 수정
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/37e00797-e5e1-4e0e-8686-e8ddcd389a3c
+#### 3-8. 컨테이너 정렬 기능
+https://github.com/Goorm-OGJG/Web-IDE/assets/93318615/093efa9d-4957-4197-aab2-9f8f33230c69
+
+### 4. 컨테이너 생성 UI
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/a818fe47-df59-462c-8b66-e69ddd6a4c36
+
+### 5. 코드 편집 UI
+#### 5-1. 동시 편집
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/1f217c7e-af87-47e6-a619-de247b4afb24
+
+#### 5-2. 탭 기능
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/9be2d61c-442e-4f0b-abeb-0e694ae3e357
+
+#### 5-3. 파일 및 폴더 생성
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/0235b0ce-1abd-4c11-9059-e0c8f27bafd5
+
+#### 5-4. 파일 및 폴더 삭제
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/11cf9bc2-7f62-4881-8382-b602269e48d5
+
+#### 5-5. 파일 및 폴더 이름 변경
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/11f91211-c958-4d7b-bf17-276adacd20f2
+
+#### 5.6. 채팅
+https://github.com/Goorm-OGJG/Web-IDE/assets/79975172/25a6a2f2-7449-484b-aaea-36f462224037
+
+## 원본 레포 => https://github.com/Goorm-OGJG/Web-IDE
