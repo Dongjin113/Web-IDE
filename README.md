@@ -366,4 +366,4 @@ filter에서의 에러를 핸들링 할 수 있는 AuthenticationEntryPoint를 �
 - ErrorResult라는 class를 정의하고 메시지를 변경하면 새로운 객체를 만들어서 반환하도록 변경
 
 
-## 전체기능 보러가기 => https://github.com/Goorm-OGJG/Web-IDE
+## 원본 레포 기능 영상 => https://github.com/Goorm-OGJG/Web-IDE
