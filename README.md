@@ -229,6 +229,10 @@ WebSocket보다 간단한 구현, 단일 연결로 여러 메시지 전송 가�
 5. AccessToken이 만료되었을시 클라이언트에서 RefreshToken을 통한 AccessToken 재발급 요청
 6. RefreshToken을 검증 후  AccessToken을 재발급
 
+### 2. 비밀번호 찾기
+https://github.com/Dongjin113/Web-IDE/assets/104759062/37b2fd02-a5c4-4224-aae8-742a80c3cd07
+
+
 
 ## 🪙토큰 
 AccessToken의 유효기간은 1분 RefreshToken의 유효기간은 2주  
